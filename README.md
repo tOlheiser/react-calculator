@@ -34,7 +34,7 @@ function handleClick (val) {
 * **+/-** - Checks to see if a number is > 0, if so, put a negative '-' sign in front of the number. Removes the '-' sign if the number is < 0. Must first check to see if an operator is assigned to determine which value to modify. 
 * **=** - Resolves the equation. Must first check to see if an operator has been assigned, and that both values... contain values. Then perhaps run a switch statement, and if the operator mathes the value, execute the expression then store the value. 
 * **.** - Adds a decimal to the number. There cannot be more than one decimal in a number. Must first check to see whether an operator is assigned to determine which value to modify. 
-* **+, -, *, /** - Assigns an operator. If the second value already exists, perform the equation. The result of this equation is stored into value1 and the newly selected operator is assigned (which leaves the second value as null). Consider storing the switch statement in a separate function that returns a value. 
+* +, -, *, / - Assigns an operator. If the second value already exists, perform the equation. The result of this equation is stored into value1 and the newly selected operator is assigned (which leaves the second value as null). Consider storing the switch statement in a separate function that returns a value. 
 * **number keys** - Checks to see whether an operator is assigned to see which value to modify. Will not accept a '0' if the number currently has no value.  
 
 **Deeper Logic**
