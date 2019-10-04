@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { clearScreenDown } from 'readline';
+import { throwStatement } from '@babel/types';
 
 
 /*
@@ -20,15 +21,26 @@ class Calculator extends React.Component {
         this.state = {
             firstValue: '0',
             operator: '',
-            secondValue: '0',
-            display: '0'
+            secondValue: '',
+            display: '0',
+            resultReceived: false
         };
         this.handleNumberClick = this.handleNumberClick.bind(this);
         this.handleOperatorClick = this.handleOperatorClick.bind(this);
         this.handleEqualsClick = this.handleEqualsClick.bind(this);
         this.handleClearClick = this.handleClearClick.bind(this);
+        this.handleClearCurrentClick = this.handleClearCurrentClick.bind(this);
+        this.handleDeleteClick = this.handleDeleteClick.bind(this);
+        this.handleDecimalClick = this.handleDecimalClick.bind(this);
+        this.handlePosNegToggleClick = this.handlePosNegToggleClick.bind(this);
         // Bind event handlers here. 
     }
+    
+    /* returnCurrentValue() {
+        if (this.state.operator === '' || this.state.resultReceived) {
+
+        }
+    } */
 
     handleNumberClick(value) {
         if (this.state.operator === '') {
@@ -39,6 +51,12 @@ class Calculator extends React.Component {
                     this.setState({
                         firstValue: value, 
                         display: value
+                    });
+                } else if (this.state.resultReceived === true) {
+                    this.setState({
+                        firstValue: value,
+                        display: value,
+                        resultReceived: false
                     });
                 } else {
                     this.setState({
@@ -64,23 +82,104 @@ class Calculator extends React.Component {
                 } 
             }
         }
-        //alert (value);
-        //alert (this.state.firstValue);
+    }
+
+    handleDecimalClick() {
+        let firstValue = this.state.firstValue;
+        let secondValue = this.state.secondValue;
+
+        if (this.state.resultReceived) return;
+
+        if (this.state.operator === '') {
+            if (firstValue.includes('.')) return;
+            this.setState({
+                firstValue: firstValue += '.',
+                display: firstValue
+            });
+        } else if (this.state.secondValue === '') {
+            this.setState({
+                secondValue: '0.',
+                display: '0.'
+            });
+        } else {
+            if (secondValue.includes('.')) return;
+            this.setState({
+                secondValue: secondValue += '.',
+                display: secondValue
+            });
+        }
+    }
+
+    handlePosNegToggleClick() {
+        let firstValue = this.state.firstValue;
+        let secondValue = this.state.secondValue;
+        //determine the current value
+        if (this.state.operator === '') {
+            if (this.state.resultReceived) {
+               if (firstValue.includes('-')) {
+                    firstValue = firstValue.substr(1);
+                    this.setState({
+                        firstValue: firstValue,
+                        display: firstValue,
+                        resultReceived: false
+                    });
+                } else {
+                    firstValue = '-' + firstValue;
+                    this.setState({
+                        firstValue: firstValue,
+                        display: firstValue,
+                        resultReceived: false
+                    });
+                }
+            }  else {
+                if (firstValue.includes('-')) {
+                    firstValue = firstValue.substr(1);
+                    this.setState({
+                        firstValue: firstValue,
+                        display: firstValue
+                    });
+                } else {
+                    firstValue = '-' + firstValue;
+                    this.setState({
+                        firstValue: firstValue,
+                        display: firstValue
+                    });
+                }
+            } 
+        } else {
+            if (secondValue.includes('-')) {
+                secondValue = secondValue.substr(1);
+                this.setState({
+                    secondValue: secondValue,
+                    display: secondValue
+                });
+            } else {
+                secondValue = '-' + secondValue;
+                this.setState({
+                    secondValue: secondValue,
+                    display: secondValue
+                });
+            }
+        }
     }
 
     handleOperatorClick(operator) {
-
-
-        if (this.state.secondValue === '0') {
+        if (this.state.secondValue === '') {
             this.setState({
                 operator: operator
             });
         } else {
             this.calculate();
+            this.setState ({
+                operator: operator
+            });
         }
     }
 
     handleEqualsClick() {
+        if (this.state.secondValue === '' || this.state.operator === '') {
+            return
+        }
         this.calculate();
     }
 
@@ -88,9 +187,63 @@ class Calculator extends React.Component {
         this.setState({
             firstValue: '0',
             operator: '',
-            secondValue: '0',
-            display: '0'
+            secondValue: '',
+            display: '0',
+            resultReceived: false
         });
+    }
+
+    handleClearCurrentClick() {
+        (this.state.operator === '') ?
+            this.setState({
+                firstValue: '0',
+                display: '0', 
+                resultReceived: false
+            }) :
+            this.setState({
+                secondValue: '',
+                display: '0',
+                resultReceived: false
+            });
+    }
+
+    handleDeleteClick() {
+        let value;
+
+        if (this.state.resultReceived) return;
+
+        if (this.state.operator === '') {
+            // I don't want 
+            if (this.state.firstValue === '0') {
+                return
+            } else if (this.state.firstValue.length == 1) {
+                this.setState({
+                    firstValue: '0',
+                    display: '0'
+                });
+            } else {
+                value = this.state.firstValue;
+                this.setState({
+                    firstValue: value.slice(0, -1),
+                    display: value.slice(0, -1)
+                });
+            }
+        } else {
+            if (this.state.secondValue === '') {
+                return
+            } else if (this.state.secondValue.length == 1) {
+                this.setState({
+                    secondValue: '',
+                    display: '0'
+                });
+            } else {
+                value = this.state.secondValue;
+                this.setState({
+                    secondValue: value.slice(0, -1),
+                    display: value.slice(0, -1) 
+                });
+            }
+        }
     }
 
     calculate() {
@@ -118,16 +271,21 @@ class Calculator extends React.Component {
         this.setState({
             firstValue: result,
             operator: '',
-            secondValue: '0',
-            display: result
+            secondValue: '',
+            display: result,
+            resultReceived: true
         });
     }
 
     render() {
-        
+
         let display = this.state.display;
         //alert(this.state.firstValue);
-        //alert (this.state.operator);
+        //alert(this.state.operator);
+        //alert(this.state.secondValue);
+        //alert(this.state.display);
+
+
         return (
             <div class="container">
                 <div class="row display">
@@ -137,9 +295,9 @@ class Calculator extends React.Component {
                     </div>
                 </div>
                 <div class="row"> 
-                    <button class="col" >CE</button>
+                    <button class="col" onClick={this.handleClearCurrentClick}>CE</button>
                     <button class="col" onClick={this.handleClearClick}>C</button>
-                    <button class="col" >DEL</button>
+                    <button class="col" onClick={this.handleDeleteClick}>DEL</button>
                     <button class="col" onClick={() => this.handleOperatorClick('/')}>/</button>
                 </div>
                 <div class="row"> 
@@ -161,9 +319,9 @@ class Calculator extends React.Component {
                    <button class="col" onClick={() => this.handleOperatorClick('+')}>+</button>
                 </div>
                  <div class="row"> 
-                    <button class="col num lCorner" >~</button>                    
+                    <button class="col num lCorner" onClick={this.handlePosNegToggleClick}>~</button>                    
                     <button class="col num" onClick={() => this.handleNumberClick('0')}>0</button>
-                    <button class="col num" >.</button>
+                    <button class="col num" onClick={this.handleDecimalClick}>.</button>
                     <button class="col rCorner" onClick={this.handleEqualsClick}>=</button>
                 </div>
             </div>
