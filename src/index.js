@@ -58,6 +58,13 @@ class Calculator extends React.Component {
                         display: value,
                         resultReceived: false
                     });
+                } else if (this.state.firstValue === '-0') {
+                    value = '-' + value;
+
+                    this.setState({
+                        firstValue: value,
+                        display: value
+                    });
                 } else {
                     this.setState({
                         firstValue: this.state.firstValue += value,
@@ -116,6 +123,7 @@ class Calculator extends React.Component {
         //determine the current value
         if (this.state.operator === '') {
             if (this.state.resultReceived) {
+                firstValue = firstValue.toString();
                if (firstValue.includes('-')) {
                     firstValue = firstValue.substr(1);
                     this.setState({
@@ -146,6 +154,40 @@ class Calculator extends React.Component {
                     });
                 }
             } 
+        } else if (this.state.operator.length === 1 && this.state.secondValue === '') {
+            firstValue = firstValue.toString();
+            if (firstValue.includes('-')) {
+                firstValue = firstValue.substr(1);
+
+                this.setState({
+                    firstValue: firstValue,
+                    display: firstValue
+                });
+            } else {
+                firstValue = '-' + firstValue;
+
+                this.setState({
+                    firstValue: firstValue,
+                    display: firstValue
+                });
+            }
+        } else if (this.state.resultReceived === 'true' && this.state.operator.length === 1) {
+            firstValue = firstValue.toString();
+            if (firstValue.includes('-')) {
+                firstValue = firstValue.substr(1);
+                this.setState({
+                    firstValue: firstValue,
+                    display: firstValue,
+                    resultReceived: false
+                });
+            } else {
+                firstValue = '-' + firstValue;
+                this.setState({
+                    firstValue: firstValue,
+                    display: firstValue,
+                    resultReceived: false
+                });
+            }
         } else {
             if (secondValue.includes('-')) {
                 secondValue = secondValue.substr(1);
@@ -284,7 +326,7 @@ class Calculator extends React.Component {
         //alert(this.state.operator);
         //alert(this.state.secondValue);
         //alert(this.state.display);
-
+        //alert(this.state.resultReceived);
 
         return (
             <div class="container">
@@ -298,25 +340,25 @@ class Calculator extends React.Component {
                     <button class="col" onClick={this.handleClearCurrentClick}>CE</button>
                     <button class="col" onClick={this.handleClearClick}>C</button>
                     <button class="col" onClick={this.handleDeleteClick}>DEL</button>
-                    <button class="col" onClick={() => this.handleOperatorClick('/')}>/</button>
+                    <button class="col" id="divide" onClick={() => this.handleOperatorClick('/')}>/</button>
                 </div>
                 <div class="row"> 
                     <button class="col num" onClick={() => this.handleNumberClick('7')}>7</button>
                     <button class="col num" onClick={() => this.handleNumberClick('8')}>8</button>
                     <button class="col num" onClick={() => this.handleNumberClick('9')}>9</button>
-                    <button class="col" onClick={() => this.handleOperatorClick('*')}>X</button>
+                    <button class="col" id="multiply" onClick={() => this.handleOperatorClick('*')}>X</button>
                 </div>
                 <div class="row"> 
                     <button class="col num" onClick={() => this.handleNumberClick('4')}>4</button>
                     <button class="col num" onClick={() => this.handleNumberClick('5')}>5</button>
                     <button class="col num" onClick={() => this.handleNumberClick('6')}>6</button>
-                    <button class="col" onClick={() => this.handleOperatorClick('-')}>-</button>
+                    <button class="col" id="subtract" onClick={() => this.handleOperatorClick('-')}>-</button>
                 </div>
                 <div class="row"> 
                     <button class="col num" onClick={() => this.handleNumberClick('1')}>1</button>
                     <button class="col num" onClick={() => this.handleNumberClick('2')}>2</button>
                     <button class="col num" onClick={() => this.handleNumberClick('3')}>3</button>
-                   <button class="col" onClick={() => this.handleOperatorClick('+')}>+</button>
+                   <button class="col" id="add" onClick={() => this.handleOperatorClick('+')}>+</button>
                 </div>
                  <div class="row"> 
                     <button class="col num lCorner" onClick={this.handlePosNegToggleClick}>~</button>                    
