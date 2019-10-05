@@ -242,17 +242,12 @@ class Calculator extends React.Component {
     }
 
     handleClearCurrentClick() {
-        (this.state.operator === '') ?
-            this.setState({
-                firstValue: '0',
-                display: '0', 
-                resultReceived: false
-            }) :
-            this.setState({
-                secondValue: '',
-                display: '0',
-                resultReceived: false
-            });
+        let currentValue = this.returnCurrentValue();
+        this.setState({
+            [currentValue]: '0',
+            display: '0', 
+            resultReceived: false
+        });
     }
 
     handleDeleteClick() {
