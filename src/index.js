@@ -300,6 +300,12 @@ class Calculator extends React.Component {
         }
     }
 
+    returnCurrentValue() {
+        let currentValue;
+        this.state.operator === '' ? currentValue = 'firstValue' : currentValue = 'secondValue';
+        return currentValue;
+    }
+
     calculate() {
         let operator = this.state.operator;
         let firstVal = Number(this.state.firstValue);
