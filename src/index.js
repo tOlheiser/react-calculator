@@ -30,8 +30,8 @@ class Calculator extends React.Component {
 
         if (this.invalidInput(value)) return;
 
-        /* If the current value is '0', the number entered is not '0',
-        or if resultReceived is true, assign that number as the value. */
+        /* If the current value is '0', or if resultReceived is true, 
+        assign that number as the value. */
         if (this.state[currentValue] === '0' || this.state.resultReceived === true) {
             this.setState({
                 [currentValue]: value, 
@@ -67,7 +67,6 @@ class Calculator extends React.Component {
                 display: '0.',
                 resultReceived: 'false'
         });
-        // If true, the current value is firstValue
         } else {
             // There cannot be more than one decimal in a number.
             if (this.state[currentValue].includes('.')) return;
@@ -80,88 +79,48 @@ class Calculator extends React.Component {
     }
 
     handlePosNegToggleClick() {
+        let currentValue = this.returnCurrentValue();
+        let currentNumber = this.state[currentValue];
         let firstValue = this.state.firstValue;
         let secondValue = this.state.secondValue;
-        //determine the current value
-        if (this.state.operator === '') {
-            if (this.state.resultReceived) {
-                firstValue = firstValue.toString();
-               if (firstValue.includes('-')) {
-                    firstValue = firstValue.substr(1);
-                    this.setState({
-                        firstValue: firstValue,
-                        display: firstValue,
-                        resultReceived: false
-                    });
-                } else {
-                    firstValue = '-' + firstValue;
-                    this.setState({
-                        firstValue: firstValue,
-                        display: firstValue,
-                        resultReceived: false
-                    });
-                }
-            }  else {
-                if (firstValue.includes('-')) {
-                    firstValue = firstValue.substr(1);
-                    this.setState({
-                        firstValue: firstValue,
-                        display: firstValue
-                    });
-                } else {
-                    firstValue = '-' + firstValue;
-                    this.setState({
-                        firstValue: firstValue,
-                        display: firstValue
-                    });
-                }
-            } 
-        } else if (this.state.operator.length === 1 && this.state.secondValue === '') {
+
+        // Mirroring the firstValue onto secondValue with an opposite +/- value.
+        if (this.state.operator.length === 1 && this.state.secondValue === '') {
             firstValue = firstValue.toString();
+            // If it's a negative number, remove the '-' from the number before updating state.
             if (firstValue.includes('-')) {
-                firstValue = firstValue.substr(1);
+                secondValue = firstValue.substr(1);
 
                 this.setState({
-                    firstValue: firstValue,
-                    display: firstValue
+                    secondValue: secondValue,
+                    display: secondValue
                 });
             } else {
-                firstValue = '-' + firstValue;
+                // If it was a positive number, pass the negative equivalent into state.
+                secondValue = '-' + firstValue;
 
                 this.setState({
-                    firstValue: firstValue,
-                    display: firstValue
-                });
-            }
-        } else if (this.state.resultReceived === 'true' && this.state.operator.length === 1) {
-            firstValue = firstValue.toString();
-            if (firstValue.includes('-')) {
-                firstValue = firstValue.substr(1);
-                this.setState({
-                    firstValue: firstValue,
-                    display: firstValue,
-                    resultReceived: false
-                });
-            } else {
-                firstValue = '-' + firstValue;
-                this.setState({
-                    firstValue: firstValue,
-                    display: firstValue,
-                    resultReceived: false
+                    secondValue: secondValue,
+                    display: secondValue
                 });
             }
         } else {
-            if (secondValue.includes('-')) {
-                secondValue = secondValue.substr(1);
+            currentNumber = currentNumber.toString();
+
+            // if the number is currently negative
+            if (currentNumber.includes('-')) {
+                currentNumber = currentNumber.substr(1);
                 this.setState({
-                    secondValue: secondValue,
-                    display: secondValue
+                    [currentValue]: currentNumber,
+                    display: currentNumber,
+                    resultReceived: false
                 });
             } else {
-                secondValue = '-' + secondValue;
+                currentNumber = '-' + this.state[currentValue];
                 this.setState({
-                    secondValue: secondValue,
-                    display: secondValue
+                    [currentValue]: currentNumber,
+                    display: currentNumber,
+                    resultReceived: false
                 });
             }
         }
@@ -173,7 +132,7 @@ class Calculator extends React.Component {
             this.setState({
                 operator: operator
             });
-        // calculates the first and second value before storing the operator.
+        // if secondValue exists, calculate the first and second value before storing the operator.
         } else {
             this.calculate();
             this.setState ({
@@ -183,10 +142,16 @@ class Calculator extends React.Component {
     }
 
     handleEqualsClick() {
-        if (this.state.secondValue === '' || this.state.operator === '') {
+
+        let mirrorValue = Number(this.state.firstValue);
+
+        if (this.state.operator === '') {
             return;
+        } else if (this.state.operator.length == 1 && this.state.secondValue === '') {
+            this.calculate(mirrorValue);
+        } else {
+            this.calculate();
         }
-        this.calculate();
     }
 
     handleClearClick() {
@@ -254,25 +219,27 @@ class Calculator extends React.Component {
         return currentValue;
     }
 
-    calculate() {
+    /* By default, secondValue is set to its state equivalent, unless I need to pass an 
+    argument in to mirror the firstValue (when a user runs "8 * =") for example. */
+    calculate(secondValue = Number(this.state.secondValue)) {
         let operator = this.state.operator;
-        let firstVal = Number(this.state.firstValue);
-        let secondVal = Number(this.state.secondValue);
+        let firstValue = Number(this.state.firstValue);
         let result;
 
+        // Calculate and store the result in a value based on the operator chosen.
         // eslint-disable-next-line default-case
         switch (operator) {
             case '-':
-                result = firstVal - secondVal;
+                result = firstValue - secondValue;
                 break;
             case '+':
-                result = firstVal + secondVal;
+                result = firstValue + secondValue;
                 break;
             case '*':
-                result = firstVal * secondVal;
+                result = firstValue * secondValue;
                 break;
             case '/':
-                result = firstVal / secondVal;
+                result = firstValue / secondValue;
                 break;
         }
 
