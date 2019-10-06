@@ -39,7 +39,7 @@ handleDecimalClick() {
     }
 ```
 
-For starters, I had the secondValue default to an empty string. It wasn't until later that I determined that all I needed to determine the current value was whether or not the operator was assigned. This is the first thing I need to fix. Secondly, the code is repetitive. I'm doing the same thing twice for the first and second value. 
+For starters, I had the secondValue default to an empty string. It wasn't until later that I determined that all I needed to determine the current value was whether or not the operator was assigned. This is the first thing I need to fix. Secondly, the code is repetitive. I'm doing the same thing twice for the first and second value. *The main factor for secondValue defaulting to an empty string is that if it's set to 0, then it's assigned by default when I don't want it to be.*
 
 ## Solution
 
