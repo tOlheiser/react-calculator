@@ -12,35 +12,50 @@ body {
 }
 
 .container {
-    width: 280px;
+    width: 320px;
     margin-top: 50%;
     border-radius: 8px;
     background-image: linear-gradient(to right bottom, #7ad6a2, #7ad89f, #7bda9c, #7cdc98, #7dde94, #7fdd90, #81db8d, #83da89, #85d686, #87d183, #89cd80, #8ac97d);
+}
+
+.row {
+    display: flex;
+    flex-wrap: nowrap;
 }
 
 /* Display Styles */
 
 .display {
     display: flex;
-    flex-direction: column;
-    height: 160px;
+    height: 190px;
+    justify-content: flex-end;
+    align-items: flex-end;
 }
 
-.numContainer {
-    justify-content: flex-end;
-}
+/* Display Number Styles */
 
 h1 {
+    margin: 0;
     color: white;
     font-size: 50px;
-    padding: 10px 20px 0 0;
+    padding: 0 10px 5px 0;
 }
 
-p {
-    color: white;
-    font-size: 25px;
-    padding: 10px 0 0 15px;
-    margin: 0;
+.largeSize {
+    font-size: 60px;
+}
+
+.regSize {
+    font-size: 50px;
+}
+
+.smallSize {
+    font-size: 40px;
+}
+
+.xsmallSize {
+    font-size: 28px;
+    padding-bottom: 15px;
 }
 
 /* Button Styles */
@@ -60,15 +75,17 @@ button:hover {
     outline: 0;
 }
 
-.row {
-    display: flex;
-    flex-wrap: nowrap;
-}
-
 .col {
     width: 25%;
-    height: 55px;
+    height: 70px;
     background-color: #ececec;
+}
+
+.activeOperator {
+    width: 25%;
+    height: 70px;
+    color: white;
+    background-color: transparent;
 }
 
 .num {
@@ -82,3 +99,4 @@ button:hover {
 .rCorner {
     border-bottom-right-radius: 8px;
 }
+
