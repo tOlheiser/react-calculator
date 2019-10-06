@@ -80,3 +80,19 @@ Turns out I can create an anonymous function that serves as a reference to the e
 ```javascript
 <button class="col num" onClick={() => this.handleClick(3)}>3</button>
 ```
+
+### Log 5: The console is useful, who would of thought!
+To troubleshoot my code, I've been using the lazy and time consuming method of using the alert function to display state values on render. 
+
+I was having issues figuring out why my code was throwing an error. I was stuck on it for a good 30 minutes. When I ran tests with the console window open, I was able to pick up on one of my state values being a number type and not a string like I was coding for. 
+
+*As a side note, get in the habit of commenting code as you do it. If you leave it for later, you may not get to it until you have a lot of code to comment.*
+
+### Log 6: Commenting and Git workflow
+I fell into the bad habit of not commenting my code right away, and it's something that, if left unattended to, would not get finished for a while. This is not something I'd like to continue to do, as it made working on old code a little more tedious. Also, I found that my Git workflow is horrendous:
+
+* I don't commit often enough; I often commit big batches of code at a time with no real 'theme' to it. 
+* Branches are not something I thought I would need for a small project, but they would have been pretty helpful. 
+
+### Log 7: Learning why React is great
+So far I haven't made full use of what React has to offer, but already I can tell developing with it is nice. With the React developer tools, you get to see what exactly is in your state at all times. Also, I'd imagine that test driven development would be very easy with React. 
