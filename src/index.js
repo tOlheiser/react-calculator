@@ -8,7 +8,7 @@ class Calculator extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            firstValue: '0',
+            firstValue: '',
             operator: '',
             secondValue: '',
             display: '0',
@@ -25,98 +25,56 @@ class Calculator extends React.Component {
         this.handlePosNegToggleClick = this.handlePosNegToggleClick.bind(this);
     }
 
-    invalidInput(input) {
-        // Stripping the value of any decimal or commas and storing the length in a variable.
-        let firstValueLength = this.state.firstValue.toString().replace(/^-|\./gu, '').length;
-        let secondValueLength = this.state.secondValue.toString().replace(/^-|\./gu, '').length;
-
-        /* Length must not be greater than 16, and will return if a '0' has been entered when the
-        current value is equal to '0'. */
-        if  ((firstValueLength > 15 || secondValueLength > 15) || 
-            (this.state.firstValue === '0' && input === '0') || 
-            (this.state.secondValue === '0' && input === '0')) {
-                return true;
-        } 
-    }
-
     handleNumberClick(value) {
-        let secondValue = this.state.secondValue;
-        let firstValue = this.state.firstValue;
+        let currentValue = this.returnCurrentValue();
 
         if (this.invalidInput(value)) return;
 
-        // If true, the current value is the firstValue
-        if (this.state.operator === '') {
-            /* If the current value is '0', the number entered is not '0',
-            or if resultReceived is true, assign that number as the value. */
-            if (firstValue === '0' || this.state.resultReceived === true) {
-                this.setState({
-                    firstValue: value, 
-                    display: value,
-                    resultReceived: false
-                });
-            /* If the value is negative and begins with 0, assign the new number and strip the '0'. */
-            } else if (firstValue === '-0') {
-                value = '-' + value;
+        /* If the current value is '0', the number entered is not '0',
+        or if resultReceived is true, assign that number as the value. */
+        if (this.state[currentValue] === '0' || this.state.resultReceived === true) {
+            this.setState({
+                [currentValue]: value, 
+                display: value,
+                resultReceived: false
+            });
+        /* If the value is negative and begins with 0, assign the new number and strip the '0'. */
+        } else if (this.state[currentValue] === '-0') {
+            value = '-' + value;
 
-                this.setState({
-                    firstValue: value,
-                    display: value
-                });
-            // Default behaviour: Concatenate the number onto the value.
-            } else {
-                this.setState({
-                    firstValue: firstValue += value,
-                    display: firstValue
-                });
-            } 
-        // The current value is the secondValue
+            this.setState({
+                [currentValue]: value,
+                display: value
+            });
+        // Default behaviour: Concatenate the number onto the value.
         } else {
-            if (this.state.secondValue === '0') {
-                this.setState({
-                    secondValue: value, 
-                    display: value
-                });
-            } else {
-                this.setState({
-                    secondValue: secondValue += value,
-                    display: secondValue
-                });
-            } 
-        }
+            let currentNumber = this.state[currentValue];
+            this.setState({
+                [currentValue]: currentNumber += value,
+                display: currentNumber
+            });
+        } 
     }
 
     handleDecimalClick() {
-        let firstValue = this.state.firstValue;
-        let secondValue = this.state.secondValue;
+        let currentValue = this.returnCurrentValue();
+        let currentNumber = this.state[currentValue];
 
         // If the display contains the value from the previous equation, reset the values.
-        if (this.state.resultReceived) {
+        if (this.state.resultReceived || this.state[currentValue] === '') {
             this.setState({
-                firstValue: '0.',
+                [currentValue]: '0.',
                 display: '0.',
                 resultReceived: 'false'
-            });
+        });
         // If true, the current value is firstValue
-        } else if (this.state.operator === '') {
+        } else {
             // There cannot be more than one decimal in a number.
-            if (firstValue.includes('.')) return;
+            if (this.state[currentValue].includes('.')) return;
             // concatenating the decimal onto the value.
             this.setState({
-                firstValue: firstValue += '.',
-                display: firstValue
-            });
-        // Assigning '0.' if the secondValue is empty.
-        } else if (this.state.secondValue === '') {
-            this.setState({
-                secondValue: '0.',
-                display: '0.'
-            });
-        } else {
-            if (secondValue.includes('.')) return;
-            this.setState({
-                secondValue: secondValue += '.',
-                display: secondValue
+                [currentValue]: currentNumber += '.',
+                display: currentNumber
             });
         }
     }
@@ -210,7 +168,7 @@ class Calculator extends React.Component {
     }
 
     handleOperatorClick(operator) {
-        // current value is the firstValue
+
         if (this.state.secondValue === '') {
             this.setState({
                 operator: operator
@@ -251,48 +209,43 @@ class Calculator extends React.Component {
     }
 
     handleDeleteClick() {
-        let value;
+        let currentValue = this.returnCurrentValue();
+        let currentNumber;
 
         // Will not delete any digits from the previous result.
         if (this.state.resultReceived) return;
 
-        if (this.state.operator === '') {
-            // If the current value is '0', exit the function.
-            if (this.state.firstValue === '0') {
-                return;
-            // if the current value consists of only 1 digit, reset the values.
-            } else if (this.state.firstValue.length == 1) {
-                this.setState({
-                    firstValue: '0',
-                    display: '0'
-                });
-            } else {
-                value = this.state.firstValue;
-                // Use the slice function to remove the last character.
-                this.setState({
-                    firstValue: value.slice(0, -1),
-                    display: value.slice(0, -1)
-                });
-            }
+        // If the current value is '0', exit the function.
+        if (this.state[currentValue] === '0' || this.state[currentValue] === '') {
+            return;
+        // if the current value consists of only 1 digit, reset the values.
+        } else if (this.state[currentValue].length === 1) {
+            this.setState({
+                [currentValue]: '0',
+                display: '0'
+            });
         } else {
-            // If the current value is empty, exit the function.
-            if (this.state.secondValue === '') {
-                return;
-            // if the current value consists of only 1 digit, reset the values.
-            } else if (this.state.secondValue.length == 1) {
-                this.setState({
-                    secondValue: '',
-                    display: '0'
-                });
-            } else {
-                value = this.state.secondValue;
-                // Use the slice function to remove the last character.
-                this.setState({
-                    secondValue: value.slice(0, -1),
-                    display: value.slice(0, -1) 
-                });
-            }
-        }
+            currentNumber = this.state[currentValue];
+            // Use the slice function to remove the last character.
+            this.setState({
+                [currentValue]: currentNumber.slice(0, -1),
+                display: currentNumber.slice(0, -1)
+            });
+        } 
+    } 
+
+    invalidInput(input) {
+        // Stripping the value of any decimal or commas and storing the length in a variable.
+        let firstValueLength = this.state.firstValue.toString().replace(/^-|\./gu, '').length;
+        let secondValueLength = this.state.secondValue.toString().replace(/^-|\./gu, '').length;
+
+        /* Length must not be greater than 16, and will return if a '0' has been entered when the
+        current value is equal to '0'. */
+        if  ((firstValueLength > 15 || secondValueLength > 15) || 
+            (this.state.firstValue === '0' && input === '0') || 
+            (this.state.secondValue === '0' && input === '0')) {
+                return true;
+        } 
     }
 
     returnCurrentValue() {
@@ -343,7 +296,7 @@ class Calculator extends React.Component {
         if (this.state.display[this.state.display.length -1] === '.') display += '.';
         
         // strips the display value of any hyphen or decimal values and stores the length.
-        let displayLength = this.state.display.toString().replace(/^-|\./gu, '').length;
+        let displayLength = this.state.display.toString().replace(/^-|\./gu, '').length; 
 
         return (
             <div class="container">
