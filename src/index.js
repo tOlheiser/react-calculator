@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { clearScreenDown } from 'readline';
-import { throwStatement } from '@babel/types';
+//import { clearScreenDown } from 'readline';
+//import { throwStatement } from '@babel/types';
 
 class Calculator extends React.Component {
     constructor(props) {
